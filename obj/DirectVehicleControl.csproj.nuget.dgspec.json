@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj": {}
+  },
+  "projects": {
+    "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj",
+        "projectName": "DirectVehicleControl",
+        "projectPath": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj",
+        "packagesPath": "/home/username/.nuget/packages/",
+        "outputPath": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/obj/",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "/home/username/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "Microsoft.NETCore.App": {
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            },
+            "ugcs-dotnet-sdk": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}
