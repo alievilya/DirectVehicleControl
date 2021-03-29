@@ -994,11 +994,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj",
+      "projectUniqueName": "/home/username/Documents/github/DirectVehicleControl/DirectVehicleControl.csproj",
       "projectName": "DirectVehicleControl",
-      "projectPath": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/DirectVehicleControl.csproj",
+      "projectPath": "/home/username/Documents/github/DirectVehicleControl/DirectVehicleControl.csproj",
       "packagesPath": "/home/username/.nuget/packages/",
-      "outputPath": "/home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/obj/",
+      "outputPath": "/home/username/Documents/github/DirectVehicleControl/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"

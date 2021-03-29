@@ -9,3 +9,14 @@
 /home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.csproj.CoreCompileInputs.cache
 /home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.dll
 /home/username/Documents/ugcs-dotnet-sdk-master/OtherExamples/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.pdb
+/home/username/Documents/github/DirectVehicleControl/bin/Debug/netcoreapp2.1/DirectVehicleControl.deps.json
+/home/username/Documents/github/DirectVehicleControl/bin/Debug/netcoreapp2.1/DirectVehicleControl.runtimeconfig.json
+/home/username/Documents/github/DirectVehicleControl/bin/Debug/netcoreapp2.1/DirectVehicleControl.runtimeconfig.dev.json
+/home/username/Documents/github/DirectVehicleControl/bin/Debug/netcoreapp2.1/DirectVehicleControl.dll
+/home/username/Documents/github/DirectVehicleControl/bin/Debug/netcoreapp2.1/DirectVehicleControl.pdb
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.csprojAssemblyReference.cache
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.csproj.CoreCompileInputs.cache
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.AssemblyInfoInputs.cache
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.AssemblyInfo.cs
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.dll
+/home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.pdb

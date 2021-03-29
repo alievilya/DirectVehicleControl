@@ -41,7 +41,7 @@ namespace DirectVehicleControl
             loginResponcetask.Wait();
 
             // Id of the emu-copter is 2
-            var vehicleToControl = new Vehicle { Id = 3 };
+            var vehicleToControl = new Vehicle { Id = 2 };
             // takeoff
 
             SendCommandRequest takeoff = new SendCommandRequest
