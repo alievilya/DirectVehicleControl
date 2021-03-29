@@ -3,15 +3,7 @@ import time
 import os
 import subprocess
 
-# value = input('value\n')
-# command = "yaw,0.5"
 
-
-# os.chdir("X:/code/rabota/ugcs-java-sdk-master/target/ugcs-java-sdk")
-# subprocess.call(
-#         'java -cp .;* com.ugcs.ucs.client.samples.SendCommand -c joystick "EMU-101"',
-#         shell=True)
-# print(os.listdir())
 HOST = "localhost"
 PORT = 777
 
@@ -40,6 +32,7 @@ def sendcommand():
             command = "direct_vehicle_control:yaw,-0.5"
         elif val == "-4":
             command = "direct_vehicle_control:throttle,-0.1"
+
         elif val == "5":
             command = "takeoff_command"
         elif val == "6":
@@ -50,20 +43,24 @@ def sendcommand():
             command = "exit"
         # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # sock.connect((HOST, PORT))
-
-        sock.sendall(("{}\n".format(command)).encode('utf-8'))
+        sock.sendall(bytes(command + "\n", "utf-8"))
+        # sock.sendall(("{}\n".format(command)).encode('utf-8'))
         # else:
         #     sock.sendall(("{}\n".format(final_command)).encode('utf-8'))
         data = sock.recv(1024)
         print(data)
         time.sleep(1)
-        if data == b'profit\r\n':
+        if data == b'ok':
             print('ok')
         elif data == b'exiting\r\n':
             print('exited')
         else:
             print('lol')
         # sock.close()
+
+
+commands = ["yaw,-0.2", "yaw,0.2", "yaw,-0.2"]
+commands2 = ["pitch,0.5", "throttle,0.02", "pitch,-0.5"]
 
 sendcommand()
 

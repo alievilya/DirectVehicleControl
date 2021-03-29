@@ -20,3 +20,15 @@
 /home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.AssemblyInfo.cs
 /home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.dll
 /home/username/Documents/github/DirectVehicleControl/obj/Debug/netcoreapp2.1/DirectVehicleControl.pdb
+E:\GithubProjects\DirectVehicleControl\bin\Debug\netcoreapp2.1\DirectVehicleControl.deps.json
+E:\GithubProjects\DirectVehicleControl\bin\Debug\netcoreapp2.1\DirectVehicleControl.runtimeconfig.json
+E:\GithubProjects\DirectVehicleControl\bin\Debug\netcoreapp2.1\DirectVehicleControl.runtimeconfig.dev.json
+E:\GithubProjects\DirectVehicleControl\bin\Debug\netcoreapp2.1\DirectVehicleControl.dll
+E:\GithubProjects\DirectVehicleControl\bin\Debug\netcoreapp2.1\DirectVehicleControl.pdb
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.csprojAssemblyReference.cache
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.AssemblyInfoInputs.cache
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.AssemblyInfo.cs
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.csproj.CoreCompileInputs.cache
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.dll
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.pdb
+E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.genruntimeconfig.cache
