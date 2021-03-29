@@ -47,8 +47,8 @@ namespace DirectVehicleControl
             // Id of the emu-copter is 2
             var vehicleToControl = new Vehicle {Id = 2};
 
-            TcpClientt.TcpListener server = new TcpClientt.TcpListener(IPAddress.Any, 777);
-            server.Start(); // запускаем сервер
+            TcpClientt.TcpListener server = new TcpClientt.TcpListener(IPAddress.Any, 8080);
+            server.Start(); // run server
             byte[] ok = new byte[100]; 
             ok = Encoding.Default.GetBytes("ok"); 
             while (true) // бесконечный цикл обслуживания клиентов

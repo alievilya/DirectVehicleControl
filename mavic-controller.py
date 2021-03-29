@@ -5,7 +5,7 @@ import subprocess
 
 
 HOST = "localhost"
-PORT = 777
+PORT = 8080
 
 
 def sendcommand():
