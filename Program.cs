@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using UGCS.Sdk.Protocol;
 using UGCS.Sdk.Protocol.Encoding;
 using UGCS.Sdk.Tasks;
 
+
 namespace DirectVehicleControl
 {
+   
+
     class Program
     {
         static void Main(string[] args)
         {
-
             //Connect
             TcpClient tcpClient = new TcpClient();
             tcpClient.Connect("localhost", 3334);
             MessageSender messageSender = new MessageSender(tcpClient.Session);
             MessageReceiver messageReceiver = new MessageReceiver(tcpClient.Session);
-            MessageExecutor messageExecutor = new MessageExecutor(messageSender, messageReceiver, new InstantTaskScheduler());
+            MessageExecutor messageExecutor =
+                new MessageExecutor(messageSender, messageReceiver, new InstantTaskScheduler());
             messageExecutor.Configuration.DefaultTimeout = 10000;
             var notificationListener = new NotificationListener();
             messageReceiver.AddListener(-1, notificationListener);
@@ -41,9 +43,14 @@ namespace DirectVehicleControl
             loginResponcetask.Wait();
 
             // Id of the emu-copter is 2
-            var vehicleToControl = new Vehicle { Id = 2 };
-            // takeoff
+            var vehicleToControl = new Vehicle {Id = 2};
 
+            Listener lol = new Listener();
+            lol.Connect();
+            
+            
+            
+            // takeoff
             SendCommandRequest takeoff = new SendCommandRequest
             {
                 ClientId = clientId,
@@ -59,7 +66,6 @@ namespace DirectVehicleControl
             var takeoffCmd = messageExecutor.Submit<SendCommandResponse>(takeoff);
             takeoffCmd.Wait();
             Thread.Sleep(5000);
-            
 
 
             //Go to joystick mode
@@ -97,23 +103,24 @@ namespace DirectVehicleControl
             listJoystickCommands.Add(new CommandArgument
             {
                 Code = "roll",
-                Value = new Value() { DoubleValue = 0 }
+                Value = new Value() {DoubleValue = 0}
             });
             listJoystickCommands.Add(new CommandArgument
             {
                 Code = "pitch",
-                Value = new Value() { DoubleValue = 0 }
+                Value = new Value() {DoubleValue = 0}
             });
             listJoystickCommands.Add(new CommandArgument
             {
                 Code = "yaw",
-                Value = new Value() { DoubleValue = 1 }
+                Value = new Value() {DoubleValue = 1}
             });
             listJoystickCommands.Add(new CommandArgument
             {
                 Code = "throttle",
-                Value = new Value() { DoubleValue = 0 }
+                Value = new Value() {DoubleValue = 0}
             });
+            
 
             vehicleJoystickControl.Command.Arguments.AddRange(listJoystickCommands);
 
@@ -122,7 +129,7 @@ namespace DirectVehicleControl
                 var sendJoystickCommandResponse = messageExecutor.Submit<SendCommandResponse>(vehicleJoystickControl);
                 sendJoystickCommandResponse.Wait();
                 System.Console.WriteLine("Joystick command to go UP {0}", i);
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             }
 
 
