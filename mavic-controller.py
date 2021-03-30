@@ -44,7 +44,7 @@ def sendcommand():
         print(data)
         time.sleep(1)
         if data == b'ok':
-            print('command was executed')
+            print('command was ')
         elif data == b'exiting\r\n':
             print('exited')
         else:

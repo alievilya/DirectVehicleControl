@@ -65,22 +65,22 @@ namespace DirectVehicleControl
                     int count = ns.Read(msg, 0, msg.Length); // читаем сообщение от клиента
                     Console.Write(Encoding.Default.GetString(msg, 0,
                         count)); // выводим на экран полученное сообщение в виде строки
-                    string all_message = Encoding.Default.GetString(msg);
-                    string result = all_message.Substring(0, count-1);
-                    var command_name = result.ToString().Split(":")[0];
+                    string allMessage = Encoding.Default.GetString(msg);
+                    string result = allMessage.Substring(0, count-1);
+                    var commandName = result.ToString().Split(":")[0];
                     
                     
 
-                    switch (command_name)
+                    switch (commandName)
                     {
                         case "takeoff_command":
                         {
-                            Console.Write("got command: {0}", command_name);
+                            Console.Write("got command: {0}", commandName);
                             
                             SendCommandRequest takeoff = new SendCommandRequest
                             {
                                 ClientId = clientId,
-                                Command = new UGCS.Sdk.Protocol.Encoding.Command
+                                Command = new Command
                                 {
                                     Code = "takeoff_command",
                                     Subsystem = Subsystem.S_FLIGHT_CONTROLLER,
@@ -97,9 +97,9 @@ namespace DirectVehicleControl
                         }
                         case "direct_vehicle_control":
                         {
-                            Console.Write("got command: {0}", command_name);
-                            var command_args = result.ToString().Split(":")[1];
-                            Console.Write("args of command: {0}", command_args);
+                            Console.Write("got command: {0}", commandName);
+                            var commandArgs = result.Split(":")[1];
+                            Console.Write("args of command: {0}", commandArgs);
                             // Vehicle control in joystick mode
                             SendCommandRequest vehicleJoystickControl = new SendCommandRequest
                             {
@@ -123,17 +123,17 @@ namespace DirectVehicleControl
                             vehicleJoystickControl.Vehicles.Add(vehicleToControl);
                             
                             List<CommandArgument> listJoystickCommands = new List<CommandArgument>();
-                            var direction_command = command_args.ToString().Split(",")[0];
-                            string command_value_str = command_args.ToString().Split(",")[1];
-                            double command_value = double.Parse(command_value_str, System.Globalization.CultureInfo.InvariantCulture);
+                            var directionCommand = commandArgs.ToString().Split(",")[0];
+                            string commandValueStr = commandArgs.ToString().Split(",")[1];
+                            double commandValue = double.Parse(commandValueStr, System.Globalization.CultureInfo.InvariantCulture);
                             
-                            switch (direction_command)
+                            switch (directionCommand)
                             {
                                 case "roll":
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "roll",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -156,7 +156,7 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "pitch",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -179,12 +179,12 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "throttle",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "pitch",
-                                        Value = new Value() {DoubleValue = 0}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -202,7 +202,7 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "yaw",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -228,7 +228,7 @@ namespace DirectVehicleControl
                             var sendJoystickCommandResponse =
                                 messageExecutor.Submit<SendCommandResponse>(vehicleJoystickControl);
                             sendJoystickCommandResponse.Wait();
-                            System.Console.WriteLine("Was sent {0}", command_value);
+                            System.Console.WriteLine("Was sent {0}", commandValue);
                             
                             Thread.Sleep(2000);
                             ns.Write(ok, 0, ok.Length);
