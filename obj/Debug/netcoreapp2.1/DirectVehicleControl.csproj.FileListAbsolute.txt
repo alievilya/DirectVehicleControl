@@ -32,3 +32,15 @@ E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleCont
 E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.dll
 E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.pdb
 E:\GithubProjects\DirectVehicleControl\obj\Debug\netcoreapp2.1\DirectVehicleControl.genruntimeconfig.cache
+E:\GithubProjects\dotnet-ugcs-dronecontrol\bin\Debug\netcoreapp2.1\DirectVehicleControl.deps.json
+E:\GithubProjects\dotnet-ugcs-dronecontrol\bin\Debug\netcoreapp2.1\DirectVehicleControl.runtimeconfig.json
+E:\GithubProjects\dotnet-ugcs-dronecontrol\bin\Debug\netcoreapp2.1\DirectVehicleControl.runtimeconfig.dev.json
+E:\GithubProjects\dotnet-ugcs-dronecontrol\bin\Debug\netcoreapp2.1\DirectVehicleControl.dll
+E:\GithubProjects\dotnet-ugcs-dronecontrol\bin\Debug\netcoreapp2.1\DirectVehicleControl.pdb
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.csprojAssemblyReference.cache
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.AssemblyInfoInputs.cache
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.AssemblyInfo.cs
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.csproj.CoreCompileInputs.cache
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.dll
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.pdb
+E:\GithubProjects\dotnet-ugcs-dronecontrol\obj\Debug\netcoreapp2.1\DirectVehicleControl.genruntimeconfig.cache
