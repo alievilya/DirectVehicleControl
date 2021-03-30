@@ -220,13 +220,10 @@ namespace DirectVehicleControl
                                         Value = new Value() { DoubleValue = 0 }
                                     });
                                     break;
-                                
-                                case "exit":
-                                    break;
+
                             }
 
-                            
-                            
+
                             vehicleJoystickControl.Command.Arguments.AddRange(listJoystickCommands);
                             var sendJoystickCommandResponse =
                                 messageExecutor.Submit<SendCommandResponse>(vehicleJoystickControl);
@@ -241,7 +238,7 @@ namespace DirectVehicleControl
                         {
                             break;
                         }
-                        case "landcom":
+                        case "land_command":
                         {
                             SendCommandRequest land = new SendCommandRequest
                             {
