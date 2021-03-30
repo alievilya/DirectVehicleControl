@@ -40,7 +40,7 @@ def sendcommand():
             command = "exit"
 
         sock.sendall(bytes(command + "\n", "utf-8"))
-        data = sock.recv(1024)
+        data = sock.recv(100)
         print(data)
         time.sleep(1)
         if data == b'ok':

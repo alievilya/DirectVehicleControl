@@ -45,7 +45,7 @@ namespace DirectVehicleControl
             loginResponcetask.Wait();
 
             // Id of the emu-copter is 2
-            var vehicleToControl = new Vehicle {Id = 3};
+            var vehicleToControl = new Vehicle {Id = 2};
 
             TcpClientt.TcpListener server = new TcpClientt.TcpListener(IPAddress.Any, 8080);
             server.Start(); // run server
