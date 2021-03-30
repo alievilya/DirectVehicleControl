@@ -41,7 +41,16 @@ class HandleCommand:
         color = [0, 0, 0]
         color[condition] = 255
         return color
-
+    
+    #  right - more
+    # left - less
+    # up - more
+    # down - less
+    #  index 0 - left-right
+    # index 1 - up-down
+    # index 2 - far-close
+    # import socket
+    #
     def set_state_ok(self, index):
         self.states_dict[index] = 1
         self.commands_dict[index] = "OK"
@@ -57,15 +66,7 @@ class HandleCommand:
         self.commands_dict[index] = "more"
         self.color_dict[index] = self.set_color(0)
 
-    #  right - more
-    # left - less
-    # up - more
-    # down - less
-    #  index 0 - left-right
-    # index 1 - up-down
-    # index 2 - far-close
-    # import socket
-    #
+
     def send_command_dvc(self, com_str):
         command_to_send = "direct_vehicle_control:" + com_str
         # self.sock1.connect((self.host, self.port))
@@ -75,10 +76,17 @@ class HandleCommand:
             print('ok, sent {}'.format(command_to_send))
         else:
             print('lol mda heh')
-
         time.sleep(1)
-        # self.sock1.close()
 
+    def send_command_basic(self, com_str):
+        self.sock.sendall(bytes(com_str + "\n", "utf-8"))
+        data = self.sock.recv(100)
+        if data == b'ok':
+            print('ok, sent {}'.format(com_str))
+        else:
+            print('lol mda heh')
+        time.sleep(1)
+    
     def control2d(self, vector_subtraction):
         # sides control
         # i = 0 -  left right control
@@ -129,7 +137,7 @@ class HandleCommand:
     def control3d(self, distance):
         if distance > 0 and 2.1 <= distance <= 2.3:
             self.set_state_ok(index=2)
-            print('go landing')
+            print('can go landing')
         elif 0 < distance < 2.1:
             self.set_state_more(index=2)
             command_str3d = "pitch,-{}".format(self.movement_speed)

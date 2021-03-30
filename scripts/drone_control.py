@@ -21,6 +21,7 @@ def get_distance_lidar(depth, depth_scale):
 if __name__ == "__main__":
     init_frame = True
     CommandsHandler = HandleCommand()
+
     # AligningDrone = AlignDrone()
     # cv2.namedWindow('image')
     IC = IntelCamera()
@@ -32,10 +33,14 @@ if __name__ == "__main__":
     dist_to_drone = np.array([])
     centers_of_drone = np.array([])
     mean_dist = 0
-    # rect_boarding = None
-    rect_boarding = [[444, 316, 543, 375]]
+    rect_boarding = None
+    # rect_boarding = [[444, 316, 543, 375]]
     area_center = None
-    aligned_status = 0
+    aligned_status = 0  # not aligned
+    need_to_takeoff = False
+    if need_to_takeoff:
+        CommandsHandler.send_command_basic(com_str="takeoff_command")
+    CommandsHandler.send_command_basic(com_str="joystick")
 
     while True:
         frames = pipeline.wait_for_frames()
@@ -97,18 +102,15 @@ if __name__ == "__main__":
                     CommandsHandler.set_last_coords(mean_dist, mean_center_of_drone)
 
                     aligned_status = CommandsHandler.handle_aligning()
-                    
+
                     dist_to_drone = np.array([])
                     centers_of_drone = np.array([])
                 continue
             elif aligned_status == 2:
-                # AligningDrone.close_socket()
-                
                 print('drone is aligned')
                 aligned_status = 3
 
             condition2d = CommandsHandler.update2d(subtraction=subtraction)
-            # comm = CommandsHandler.sendcommand2d()
 
             commands_dist = np.append(commands_dist, dist)
             if len(commands_dist) == 10:
@@ -116,7 +118,9 @@ if __name__ == "__main__":
                 commands_dist = np.array([])
             if condition2d:
                 condition3d = CommandsHandler.update3d(distance=mean_dist)
-                print(condition3d)
+                if condition3d:
+                    print(condition3d)
+                    CommandsHandler.send_command_basic("land_command")
         axes = ['X (L-R): ', 'Y (U-D): ', 'Z (F-B): ']
         for index, ax in zip(range(3), axes):
             cv2.putText(color_img, ax + CommandsHandler.get_command(index=index), (750, 630 + index * 40), 0, 1,
