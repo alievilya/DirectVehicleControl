@@ -18,15 +18,15 @@ def all_equal(iterable):
 class HandleCommand:
     def __init__(self):
         self.host = "localhost"
-        self.port = 8080
+        self.port = 8081
         self.commands_dict = OrderedDict()
         self.states_dict = OrderedDict()
         self.color_dict = OrderedDict()
         self.initialized_direction = None
         self.movement_speed = 0.01
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.host, self.port))
+        self.sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.sock1.connect((self.host, self.port))
 
     def set_color(self, condition):
         color = [0, 0, 0]
@@ -57,17 +57,20 @@ class HandleCommand:
     # index 2 - far-close
     # import socket
     #
-    def send_command(self, com_str):
-        print(com_str)
-        
-        self.sock.sendall(bytes(com_str + "\n", "utf-8"))
-        data = self.sock.recv(100)
+    def send_command_dvc(self, com_str):
+        command_to_send = "direct_vehicle_control:" + com_str
+        print(command_to_send)
+        # self.sock1.connect((self.host, self.port))
+        self.sock1.sendall(bytes(command_to_send + "\n", "utf-8"))
+        print('sent')
+        data = self.sock1.recv(100)
         print(data)
-        if data == b'profit\r\n':
-            print('ok')
+        if data == b'ok':
+            print('ok, sent {}'.format(command_to_send))
         else:
-            print('lol')
-        time.sleep(1)
+            print('lol mda heh')
+        # time.sleep(1)
+        # self.sock.close()
         
         # sock.close()
 
@@ -79,21 +82,21 @@ class HandleCommand:
         if vector_subtraction[0] < -30:
             self.set_state_more(index=0)
             command_str = "roll,{}".format(self.movement_speed)
-            self.send_command(com_str=command_str)
+            self.send_command_dvc(com_str=command_str)
         elif vector_subtraction[0] > 30:
             self.set_state_less(index=0)
             command_str = "roll,-{}".format(self.movement_speed)
-            self.send_command(com_str=command_str)
+            self.send_command_dvc(com_str=command_str)
         else:
             self.set_state_ok(index=0)
         if vector_subtraction[1] < -30:
             self.set_state_more(index=1)
             command_str = "throttle,{}".format(self.movement_speed)
-            self.send_command(com_str=command_str)
+            self.send_command_dvc(com_str=command_str)
         elif vector_subtraction[1] > 30:
             self.set_state_less(index=1)
             command_str = "throttle,-{}".format(self.movement_speed)
-            self.send_command(com_str=command_str)
+            self.send_command_dvc(com_str=command_str)
         else:
             self.set_state_ok(index=1)
 
@@ -125,11 +128,11 @@ class HandleCommand:
         elif 0 < distance < 2.1:
             self.set_state_more(index=2)
             command_str3d = "pitch,-{}".format(self.movement_speed)
-            self.send_command(com_str=command_str3d)
+            self.send_command_dvc(com_str=command_str3d)
         elif distance > 0 and distance > 2.3:
             self.set_state_less(index=2)
             command_str3d = "pitch,{}".format(self.movement_speed)
-            self.send_command(com_str=command_str3d)
+            self.send_command_dvc(com_str=command_str3d)
 
         # elif distance == 0:
         #     command2 = 'err'
@@ -161,6 +164,26 @@ class AlignDrone(HandleCommand):
         self.thresh_pixels = 15  # threshold
         self.tresh_meters = 0  # pogreshnost (m)
 
+        self.port = 8080
+
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.host, self.port))
+
+
+    def send_command_align(self, com_str):
+        command_to_send = "direct_vehicle_control:" + com_str
+        print(command_to_send)
+        # self.sock.connect((self.host, self.port))
+        self.sock.sendall(bytes(command_to_send + "\n", "utf-8"))
+        print('sent')
+        data = self.sock.recv(100)
+        print(data)
+        if data == b'ok':
+            print('ok, sent {}'.format(command_to_send))
+        else:
+            print('lol mda heh')
+
+
     def set_init_coords(self, distance, center_value):
         self.init_distance = distance
         self.init_center_value = center_value
@@ -181,12 +204,12 @@ class AlignDrone(HandleCommand):
 
     def initial_move(self):
         self.command_str = "roll,{}".format(self.roll_val)
-        self.send_command(com_str=self.command_str)
+        self.send_command_align(com_str=self.command_str)
         return 1
 
     def move_back(self):
         self.command_str = "roll,-{}".format(self.roll_val)
-        self.send_command(com_str=self.command_str)
+        self.send_command_align(com_str=self.command_str)
 
     def handle_aligning(self):
         self.vector_x = self.last_center_value - self.init_center_value
@@ -217,10 +240,11 @@ class AlignDrone(HandleCommand):
                 move_angle = -90
                 print('thresholded -{}'.format(self.vector_x))
         move_arg = 0.011 * move_angle
-        self.command_yaw = "{} yaw,{}".format(move_angle, round(move_arg, 3))
+        print("{} angle, command: yaw,{}".format(move_angle, round(move_arg, 3)))
+        self.command_yaw = "yaw,{}".format(move_angle, round(move_arg, 3))
 
         self.move_back()
-        self.send_command(com_str=self.command_yaw)
+        self.send_command_align(com_str=self.command_yaw)
         if -15 <= move_angle <= 15:
             return 2
         else:
