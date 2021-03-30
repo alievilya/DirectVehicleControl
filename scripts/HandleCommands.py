@@ -17,16 +17,25 @@ def all_equal(iterable):
 
 class HandleCommand:
     def __init__(self):
-        self.host = "localhost"
-        self.port = 8081
+
         self.commands_dict = OrderedDict()
         self.states_dict = OrderedDict()
         self.color_dict = OrderedDict()
         self.initialized_direction = None
-        self.movement_speed = 0.01
+        self.movement_speed = 0.05
 
-        self.sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.sock1.connect((self.host, self.port))
+        self.roll_val = 0.1
+        self.R = 0.5  # distance of the roll operation (m)
+        self.height = 1.05  # height from drone (m)
+        self.thresh_pixels = 15  # threshold
+        self.tresh_meters = 0  # pogreshnost (m)
+        
+        self.host = "localhost"
+        self.port = 8080
+
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.host, self.port))
+
 
     def set_color(self, condition):
         color = [0, 0, 0]
@@ -59,20 +68,16 @@ class HandleCommand:
     #
     def send_command_dvc(self, com_str):
         command_to_send = "direct_vehicle_control:" + com_str
-        print(command_to_send)
         # self.sock1.connect((self.host, self.port))
-        self.sock1.sendall(bytes(command_to_send + "\n", "utf-8"))
-        print('sent')
-        data = self.sock1.recv(100)
-        print(data)
+        self.sock.sendall(bytes(command_to_send + "\n", "utf-8"))
+        data = self.sock.recv(100)
         if data == b'ok':
             print('ok, sent {}'.format(command_to_send))
         else:
             print('lol mda heh')
-        # time.sleep(1)
-        # self.sock.close()
-        
-        # sock.close()
+
+        time.sleep(1)
+        # self.sock1.close()
 
     def control2d(self, vector_subtraction):
         # sides control
@@ -154,6 +159,72 @@ class HandleCommand:
     def get_command(self, index):
         return self.commands_dict.get(index, "Nan")
 
+    def set_init_coords(self, distance, center_value):
+        self.init_distance = distance
+        self.init_center_value = center_value
+
+    def set_last_coords(self, distance, center_value):
+        self.last_distance = distance
+        self.last_center_value = center_value
+
+    def find_angle(self):
+        self.init_distance_x = (self.init_distance ** 2 - self.height ** 2) ** 0.5
+        self.last_distance_x = (self.last_distance ** 2 - self.height ** 2) ** 0.5
+        print('init x:', self.init_distance_x, '\nlast x:', self.last_distance_x)
+        arg = (self.init_distance_x ** 2 + self.R ** 2 - self.last_distance_x ** 2) / \
+              (2 * self.init_distance_x * self.R)
+        angle = math.degrees(math.acos(arg))
+        print('angle gamma: ', angle)
+        return angle
+
+    def initial_move(self):
+        self.command_str = "roll,{}".format(self.roll_val)
+        self.send_command_dvc(com_str=self.command_str)
+        return 1
+
+    def move_back(self):
+        self.command_str = "roll,-{}".format(self.roll_val)
+        self.send_command_dvc(com_str=self.command_str)
+
+    def handle_aligning(self):
+        self.vector_x = self.last_center_value - self.init_center_value
+        gamma = self.find_angle()
+        self.vector_dist = self.last_distance_x - self.init_distance_x
+        move_angle = 0
+
+        self.command_yaw = ""
+        if self.vector_dist < self.tresh_meters:
+            if self.vector_x < -1 * self.thresh_pixels:  # mb set move_angle 90, if in threshold value
+                move_angle = 90 - gamma
+                print('moved left {}'.format(self.vector_x))
+            elif self.vector_x > self.thresh_pixels:
+                move_angle = 90 + gamma
+                print('moved right {}'.format(self.vector_x))
+            else:
+                move_angle = 90
+                print('thresholded {}'.format(self.vector_x))
+
+        if self.vector_dist >= self.tresh_meters:
+            if self.vector_x > self.thresh_pixels:
+                move_angle = 270 - gamma
+                print('moved right {}'.format(self.vector_x))
+            elif self.vector_x < -1 * self.thresh_pixels:
+                move_angle = gamma - 90
+                print('moved left {}'.format(self.vector_x))
+            else:
+                move_angle = -90
+                print('thresholded -{}'.format(self.vector_x))
+        move_arg = 0.011 * move_angle
+        print("{} angle, command: yaw,{}".format(move_angle, round(move_arg, 3)))
+        self.command_yaw = "yaw,{}".format(round(move_arg, 3))
+
+        self.move_back()
+        self.send_command_dvc(com_str=self.command_yaw)
+        if -15 <= move_angle <= 15:
+            return 2
+        else:
+            return 0
+
 
 class AlignDrone(HandleCommand):
     def __init__(self):
@@ -169,7 +240,6 @@ class AlignDrone(HandleCommand):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))
 
-
     def send_command_align(self, com_str):
         command_to_send = "direct_vehicle_control:" + com_str
         print(command_to_send)
@@ -182,7 +252,14 @@ class AlignDrone(HandleCommand):
             print('ok, sent {}'.format(command_to_send))
         else:
             print('lol mda heh')
+        # self.sock.close()
 
+    def close_socket(self):
+        self.sock.close()
+
+    def open_socket(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.host, self.port))
 
     def set_init_coords(self, distance, center_value):
         self.init_distance = distance
@@ -240,7 +317,7 @@ class AlignDrone(HandleCommand):
                 move_angle = -90
                 print('thresholded -{}'.format(self.vector_x))
         move_arg = 0.011 * move_angle
-        print("{} angle, command: yaw,{}".format(move_angle, round(move_arg, 3)))
+        print("move {} angles, command: yaw,{}".format(move_angle, round(move_arg, 3)))
         self.command_yaw = "yaw,{}".format(move_angle, round(move_arg, 3))
 
         self.move_back()
@@ -350,7 +427,7 @@ def select_object(img):
 def get_contours(infrared_img, color_image):
     mean_img = np.mean(infrared_img)
     max_img = np.max(infrared_img)
-    thresh = cv2.threshold(infrared_img, mean_img * 1.8, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(infrared_img, mean_img * 1.5, 255, cv2.THRESH_BINARY)[1]
     contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(color_image, contours, -1, (255, 0, 0), 3, cv2.LINE_AA, hierarchy, 1)
     cv2.fillPoly(color_image, contours, color=(255, 0, 255))

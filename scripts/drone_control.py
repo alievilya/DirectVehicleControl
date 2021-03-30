@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 import cv2
-from HandleCommands import HandleCommand, IntelCamera, select_object, get_contours, initialization, AlignDrone
+from HandleCommands import HandleCommand, IntelCamera, select_object, get_contours, initialization
 
 
 # os.chdir("C:/Users/User/IdeaProjects/ugcs-java-sdk/ucs-client/src/main/java/com/ugcs/ucs/client/samples")
@@ -21,8 +21,8 @@ def get_distance_lidar(depth, depth_scale):
 if __name__ == "__main__":
     init_frame = True
     CommandsHandler = HandleCommand()
-    AligningDrone = AlignDrone()
-    cv2.namedWindow('image')
+    # AligningDrone = AlignDrone()
+    # cv2.namedWindow('image')
     IC = IntelCamera()
     w, h = IC.get_size()
     pipeline = IC.get_pipeline()
@@ -68,6 +68,7 @@ if __name__ == "__main__":
             #  1 - first command was sent (roll 0.1)
             #  2 - successfully performed aligning
             #  3 - aligning is not necessary
+
             if aligned_status == 0:
                 dist_to_drone = np.append(dist_to_drone, dist)
                 centers_of_drone = np.append(centers_of_drone, drone_center[0])
@@ -78,8 +79,8 @@ if __name__ == "__main__":
                     mean_dist = np.median(dist_to_drone)
                     print('init dist: ', mean_dist)
                     mean_center_of_drone = np.median(centers_of_drone)
-                    AligningDrone.set_init_coords(mean_dist, mean_center_of_drone)
-                    aligned_status = AligningDrone.initial_move()
+                    CommandsHandler.set_init_coords(mean_dist, mean_center_of_drone)
+                    aligned_status = CommandsHandler.initial_move()
                     dist_to_drone = np.array([])
                     centers_of_drone = np.array([])
                 continue
@@ -93,12 +94,16 @@ if __name__ == "__main__":
                     mean_dist = np.median(dist_to_drone)
                     print('last dist: ', mean_dist)
                     mean_center_of_drone = np.median(centers_of_drone)
-                    AligningDrone.set_last_coords(mean_dist, mean_center_of_drone)
-                    aligned_status = AligningDrone.handle_aligning()
+                    CommandsHandler.set_last_coords(mean_dist, mean_center_of_drone)
+
+                    aligned_status = CommandsHandler.handle_aligning()
+                    
                     dist_to_drone = np.array([])
                     centers_of_drone = np.array([])
                 continue
             elif aligned_status == 2:
+                # AligningDrone.close_socket()
+                
                 print('drone is aligned')
                 aligned_status = 3
 
