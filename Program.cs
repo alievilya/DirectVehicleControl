@@ -184,7 +184,7 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "pitch",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
