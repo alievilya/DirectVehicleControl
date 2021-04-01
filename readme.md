@@ -18,3 +18,5 @@ To run the example code execute `dotnet run` (from the folder where this documde
 For DJI vehicles you must allow remote control (by clicking the button with a joystick icon) from the mobile app before send `direct_vehicle_control` command.
 
 ---
+
+5E062A01-2557-4689-A420-311FE5F9F432
