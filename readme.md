@@ -20,3 +20,6 @@ For DJI vehicles you must allow remote control (by clicking the button with a jo
 ---
 
 5E062A01-2557-4689-A420-311FE5F9F432
+
+
+https://drive.google.com/file/d/1ZBbhhoR8im6oc_uvlYU0_N5ZWcnUxE_A/view
