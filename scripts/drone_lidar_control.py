@@ -36,7 +36,8 @@ if __name__ == "__main__":
     rect_boarding = None
     # rect_boarding = [[444, 316, 543, 375]]
     area_center = None
-    aligned_status = 0  # not aligned
+    # aligned_status = 0  # not aligned
+    aligned_status = 3  # doesn`t need to be aligned
     need_to_takeoff = False
     if need_to_takeoff:
         CommandsHandler.send_command_basic(com_str="takeoff_command")

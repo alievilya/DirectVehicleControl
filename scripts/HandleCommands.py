@@ -22,7 +22,7 @@ class HandleCommand:
         self.states_dict = OrderedDict()
         self.color_dict = OrderedDict()
         self.initialized_direction = None
-        self.movement_speed = 0.05
+        self.movement_speed = 0.01
 
         self.roll_val = 0.1
         self.R = 0.5  # distance of the roll operation (m)

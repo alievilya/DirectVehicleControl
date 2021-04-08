@@ -45,12 +45,12 @@ namespace DirectVehicleControl
             loginResponcetask.Wait();
 
             // Id of the emu-copter is 2
-            var vehicleToControl = new Vehicle {Id = 2};
+            var vehicleToControl = new Vehicle {Id = 3};
 
             TcpClientt.TcpListener server = new TcpClientt.TcpListener(IPAddress.Any, 8080);
             server.Start(); // run server
-            byte[] ok = new byte[100]; 
-            ok = Encoding.Default.GetBytes("ok"); 
+            byte[] ok = new byte[100];
+            ok = Encoding.Default.GetBytes("ok");
             while (true) // бесконечный цикл обслуживания клиентов
             {
                 TcpClientt.TcpClient client = server.AcceptTcpClient(); // ожидаем подключение клиента
@@ -66,17 +66,16 @@ namespace DirectVehicleControl
                     Console.Write(Encoding.Default.GetString(msg, 0,
                         count)); // выводим на экран полученное сообщение в виде строки
                     string allMessage = Encoding.Default.GetString(msg);
-                    string result = allMessage.Substring(0, count-1);
+                    string result = allMessage.Substring(0, count - 1);
                     var commandName = result.ToString().Split(":")[0];
-                    
-                    
+
 
                     switch (commandName)
                     {
                         case "takeoff_command":
                         {
                             Console.Write("got command: {0}", commandName);
-                            
+
                             SendCommandRequest takeoff = new SendCommandRequest
                             {
                                 ClientId = clientId,
@@ -112,21 +111,16 @@ namespace DirectVehicleControl
                                     ResultIndifferent = true
                                 }
                             };
-                            // ns.Write(ok, 0, ok.Length); // отправляем сообщени
-                            // byte[] income = new byte[7]; // готовим место для принятия сообщения
-                            // int counter = ns.Read(income, 0, income.Length); // читаем сообщение от клиента
-                            // Console.Write(Encoding.Default.GetString(income, 0,
-                            //     counter)); // выводим на экран полученное сообщение в виде строки
-                            // //List of current joystick values to send to vehicle.
-                            
-                            
+
+
                             vehicleJoystickControl.Vehicles.Add(vehicleToControl);
-                            
+
                             List<CommandArgument> listJoystickCommands = new List<CommandArgument>();
                             var directionCommand = commandArgs.ToString().Split(",")[0];
                             string commandValueStr = commandArgs.ToString().Split(",")[1];
-                            double commandValue = double.Parse(commandValueStr, System.Globalization.CultureInfo.InvariantCulture);
-                            
+                            double commandValue = double.Parse(commandValueStr,
+                                System.Globalization.CultureInfo.InvariantCulture);
+
                             switch (directionCommand)
                             {
                                 case "roll":
@@ -143,15 +137,15 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "yaw",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "throttle",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     break;
-                                
+
                                 case "pitch":
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -161,20 +155,20 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "roll",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "yaw",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "throttle",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     break;
-                                
+
                                 case "throttle":
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -184,20 +178,20 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "pitch",
-                                        Value = new Value() {DoubleValue = commandValue}
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "roll",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "yaw",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     break;
-                                
+
                                 case "yaw":
                                     listJoystickCommands.Add(new CommandArgument
                                     {
@@ -212,15 +206,14 @@ namespace DirectVehicleControl
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "roll",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     listJoystickCommands.Add(new CommandArgument
                                     {
                                         Code = "throttle",
-                                        Value = new Value() { DoubleValue = 0 }
+                                        Value = new Value() {DoubleValue = 0}
                                     });
                                     break;
-
                             }
 
 
@@ -229,13 +222,134 @@ namespace DirectVehicleControl
                                 messageExecutor.Submit<SendCommandResponse>(vehicleJoystickControl);
                             sendJoystickCommandResponse.Wait();
                             System.Console.WriteLine("Was sent {0}", commandValue);
-                            
+
                             Thread.Sleep(2000);
                             ns.Write(ok, 0, ok.Length);
                             break;
                         }
-                        case "direct_payload_control":
+                        case "payload_control":
                         {
+                            Console.Write("got command: {0}", commandName);
+                            var command_args = result.ToString().Split(":")[1];
+                            Console.Write("args of command: {0}", command_args);
+                            // Vehicle control in joystick mode
+                            SendCommandRequest vehiclePayloadCommandRequest = new SendCommandRequest
+                            {
+                                ClientId = clientId,
+                                Command = new UGCS.Sdk.Protocol.Encoding.Command
+                                {
+                                    Code = "payload_control",
+                                    Subsystem = Subsystem.S_FLIGHT_CONTROLLER,
+                                    Silent = false,
+                                    ResultIndifferent = false
+                                }
+                            };
+                            vehiclePayloadCommandRequest.Vehicles.Add(vehicleToControl);
+                            List<CommandArgument> listPayloadCommands = new List<CommandArgument>();
+                            var direction_command = command_args.ToString().Split(",")[0];
+                            string command_value_str = command_args.ToString().Split(",")[1];
+                            double command_value = double.Parse(command_value_str,
+                                System.Globalization.CultureInfo.InvariantCulture);
+                        
+                            switch (direction_command)
+                            {
+                                case "tilt":
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "tilt",
+                                        Value = new Value() {DoubleValue = command_value}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "roll",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "yaw",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "zoom_level",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+                                case "roll":
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "roll",
+                                        Value = new Value() {DoubleValue = command_value}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "tilt",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "yaw",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "zoom_level",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+                                case "zoom_level":
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "zoom_level",
+                                        Value = new Value() {DoubleValue = command_value}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "tilt",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "roll",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "yaw",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+                                case "yaw":
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "yaw",
+                                        Value = new Value() {DoubleValue = command_value}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "tilt",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "roll",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listPayloadCommands.Add(new CommandArgument
+                                    {
+                                        Code = "zoom_level",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+                            }
+                            vehiclePayloadCommandRequest.Command.Arguments
+                                .AddRange(listPayloadCommands);
+                            var sendPayloadCommandResponse =
+                                messageExecutor.Submit<SendCommandResponse>(vehiclePayloadCommandRequest);
+                            sendPayloadCommandResponse.Wait();
+                            System.Console.WriteLine("Was sent {0}", command_value);
+                            Thread.Sleep(2000);
+                            ns.Write(ok, 0, ok.Length);
                             break;
                         }
                         case "land_command":
@@ -271,7 +385,7 @@ namespace DirectVehicleControl
                                     ResultIndifferent = false
                                 }
                             };
-                            
+
                             joystickModeCommand.Vehicles.Add(vehicleToControl);
                             var joystickMode = messageExecutor.Submit<SendCommandResponse>(joystickModeCommand);
                             joystickMode.Wait();
@@ -283,9 +397,8 @@ namespace DirectVehicleControl
                             break;
                         }
                     }
-
-                    
                 }
+
                 System.Console.ReadKey();
                 tcpClient.Close();
                 messageSender.Cancel();
@@ -293,7 +406,6 @@ namespace DirectVehicleControl
                 messageExecutor.Close();
                 notificationListener.Dispose();
             }
-            
         }
     }
 }
