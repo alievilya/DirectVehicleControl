@@ -53,18 +53,13 @@ namespace DirectVehicleControl
             ok = Encoding.Default.GetBytes("ok");
             while (true) // бесконечный цикл обслуживания клиентов
             {
-                TcpClientt.TcpClient client = server.AcceptTcpClient(); // ожидаем подключение клиента
-                TcpClientt.NetworkStream ns = client.GetStream(); // для получения и отправки сообщений
-                // byte[] ok = new byte[100]; 
-                // ok = Encoding.Default.GetBytes("ok"); TODO Connected
-                //
-                // ns.Write(ok, 0, ok.Length);
-                while (client.Connected) // пока клиент подключен, ждем приходящие сообщения
+                TcpClientt.TcpClient client = server.AcceptTcpClient();
+                TcpClientt.NetworkStream ns = client.GetStream();
+                while (client.Connected) 
                 {
-                    byte[] msg = new byte[100]; // готовим место для принятия сообщения
-                    int count = ns.Read(msg, 0, msg.Length); // читаем сообщение от клиента
-                    Console.Write(Encoding.Default.GetString(msg, 0,
-                        count)); // выводим на экран полученное сообщение в виде строки
+                    byte[] msg = new byte[100];
+                    int count = ns.Read(msg, 0, msg.Length); 
+                    Console.Write(Encoding.Default.GetString(msg, 0, count));
                     string allMessage = Encoding.Default.GetString(msg);
                     string result = allMessage.Substring(0, count - 1);
                     var commandName = result.ToString().Split(":")[0];
@@ -227,37 +222,184 @@ namespace DirectVehicleControl
                             ns.Write(ok, 0, ok.Length);
                             break;
                         }
+                        
+                        case "set_relative_heading":
+                        {
+                            Console.Write("got command: {0}", commandName);
+                            var commandArgs = result.Split(":")[1];
+                            Console.Write("args of command: {0}", commandArgs);
+                            // Vehicle control in joystick mode
+                            SendCommandRequest vehicleRelativeOffsetControl = new SendCommandRequest
+                            {
+                                ClientId = clientId,
+                                Command = new UGCS.Sdk.Protocol.Encoding.Command
+                                {
+                                    Code = "set_relative_heading",
+                                    Subsystem = Subsystem.S_FLIGHT_CONTROLLER,
+                                    Silent = false,
+                                    ResultIndifferent = false
+                                }
+                            };
+
+
+                            vehicleRelativeOffsetControl.Vehicles.Add(vehicleToControl);
+
+                            List<CommandArgument> listRelativeOffsetCommands = new List<CommandArgument>();
+                            var directionCommand = commandArgs.ToString().Split(",")[0];
+                            string commandValueStr = commandArgs.ToString().Split(",")[1];
+                            double commandValue = double.Parse(commandValueStr,
+                                System.Globalization.CultureInfo.InvariantCulture);
+
+                            switch (directionCommand)
+                            {
+                                case "relative_heading":
+                                    listRelativeOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "relative_heading",
+                                        Value = new Value() {DoubleValue = commandValue}
+                                    });
+                                    break;
+
+                            }
+                            
+                            vehicleRelativeOffsetControl.Command.Arguments.AddRange(listRelativeOffsetCommands);
+                            var sendRelativeOffsetCommandResponse =
+                                messageExecutor.Submit<SendCommandResponse>(vehicleRelativeOffsetControl);
+                            sendRelativeOffsetCommandResponse.Wait();
+                            System.Console.WriteLine("Was sent {0}", commandValue);
+
+                            Thread.Sleep(2000);
+                            ns.Write(ok, 0, ok.Length);
+                            break;
+                        }
+                        
+                        case "set_position_offset":
+                        {
+                            Console.Write("got command: {0}", commandName);
+                            var commandArgs = result.Split(":")[1];
+                            Console.Write("args of command: {0}", commandArgs);
+                            // Vehicle control in joystick mode
+                            SendCommandRequest vehicleJoystickOffset = new SendCommandRequest
+                            {
+                                ClientId = clientId,
+                                Command = new UGCS.Sdk.Protocol.Encoding.Command
+                                {
+                                    Code = "set_position_offset",
+                                    Subsystem = Subsystem.S_FLIGHT_CONTROLLER,
+                                    Silent = false,
+                                    ResultIndifferent = false
+                                }
+                            };
+
+
+                            vehicleJoystickOffset.Vehicles.Add(vehicleToControl);
+
+                            List<CommandArgument> listJoystickOffsetCommands = new List<CommandArgument>();
+                            var directionCommand = commandArgs.ToString().Split(",")[0];
+                            string commandValueStr = commandArgs.ToString().Split(",")[1];
+                            double commandValue = double.Parse(commandValueStr,
+                                System.Globalization.CultureInfo.InvariantCulture);
+
+                            switch (directionCommand)
+                            {
+                                case "x":
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "x",
+                                        Value = new Value() {DoubleValue = commandValue}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "y",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "z",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+
+                                case "y":
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "y",
+                                        Value = new Value() {DoubleValue = commandValue}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "x",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "z",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+
+                                case "z":
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "z",
+                                        Value = new Value() {DoubleValue = commandValue}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "y",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    listJoystickOffsetCommands.Add(new CommandArgument
+                                    {
+                                        Code = "x",
+                                        Value = new Value() {DoubleValue = 0}
+                                    });
+                                    break;
+                            }
+
+
+                            vehicleJoystickOffset.Command.Arguments.AddRange(listJoystickOffsetCommands);
+                            var sendJoystickOffsetResponse =
+                                messageExecutor.Submit<SendCommandResponse>(vehicleJoystickOffset);
+                            sendJoystickOffsetResponse.Wait();
+                            System.Console.WriteLine("Was sent {0}", commandValue);
+
+                            Thread.Sleep(2000);
+                            ns.Write(ok, 0, ok.Length);
+                            break;
+                        }
+                        
+                        
                         case "payload_control":
                         {
                             Console.Write("got command: {0}", commandName);
-                            var command_args = result.ToString().Split(":")[1];
-                            Console.Write("args of command: {0}", command_args);
-                            // Vehicle control in joystick mode
+                            var commandArgs = result.ToString().Split(":")[1];
+                            Console.Write("args of command: {0}", commandArgs);
                             SendCommandRequest vehiclePayloadCommandRequest = new SendCommandRequest
                             {
                                 ClientId = clientId,
                                 Command = new UGCS.Sdk.Protocol.Encoding.Command
                                 {
                                     Code = "payload_control",
-                                    Subsystem = Subsystem.S_FLIGHT_CONTROLLER,
+                                    Subsystem = Subsystem.S_CAMERA,
                                     Silent = false,
                                     ResultIndifferent = false
                                 }
                             };
                             vehiclePayloadCommandRequest.Vehicles.Add(vehicleToControl);
                             List<CommandArgument> listPayloadCommands = new List<CommandArgument>();
-                            var direction_command = command_args.ToString().Split(",")[0];
-                            string command_value_str = command_args.ToString().Split(",")[1];
-                            double command_value = double.Parse(command_value_str,
+                            var directionCommand = commandArgs.ToString().Split(",")[0];
+                            string commandValueStr = commandArgs.ToString().Split(",")[1];
+                            double commandValue = double.Parse(commandValueStr,
                                 System.Globalization.CultureInfo.InvariantCulture);
-                        
-                            switch (direction_command)
+
+                            switch (directionCommand)
                             {
                                 case "tilt":
                                     listPayloadCommands.Add(new CommandArgument
                                     {
                                         Code = "tilt",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listPayloadCommands.Add(new CommandArgument
                                     {
@@ -279,7 +421,7 @@ namespace DirectVehicleControl
                                     listPayloadCommands.Add(new CommandArgument
                                     {
                                         Code = "roll",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listPayloadCommands.Add(new CommandArgument
                                     {
@@ -301,7 +443,7 @@ namespace DirectVehicleControl
                                     listPayloadCommands.Add(new CommandArgument
                                     {
                                         Code = "zoom_level",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listPayloadCommands.Add(new CommandArgument
                                     {
@@ -323,7 +465,7 @@ namespace DirectVehicleControl
                                     listPayloadCommands.Add(new CommandArgument
                                     {
                                         Code = "yaw",
-                                        Value = new Value() {DoubleValue = command_value}
+                                        Value = new Value() {DoubleValue = commandValue}
                                     });
                                     listPayloadCommands.Add(new CommandArgument
                                     {
@@ -342,12 +484,12 @@ namespace DirectVehicleControl
                                     });
                                     break;
                             }
-                            vehiclePayloadCommandRequest.Command.Arguments
-                                .AddRange(listPayloadCommands);
+
+                            vehiclePayloadCommandRequest.Command.Arguments.AddRange(listPayloadCommands);
                             var sendPayloadCommandResponse =
                                 messageExecutor.Submit<SendCommandResponse>(vehiclePayloadCommandRequest);
                             sendPayloadCommandResponse.Wait();
-                            System.Console.WriteLine("Was sent {0}", command_value);
+                            System.Console.WriteLine("Was sent {0}", commandValue);
                             Thread.Sleep(2000);
                             ns.Write(ok, 0, ok.Length);
                             break;
@@ -399,12 +541,12 @@ namespace DirectVehicleControl
                     }
                 }
 
-                System.Console.ReadKey();
-                tcpClient.Close();
-                messageSender.Cancel();
-                messageReceiver.Cancel();
-                messageExecutor.Close();
-                notificationListener.Dispose();
+                // System.Console.ReadKey();
+                // tcpClient.Close();
+                // messageSender.Cancel();
+                // messageReceiver.Cancel();
+                // messageExecutor.Close();
+                // notificationListener.Dispose();
             }
         }
     }

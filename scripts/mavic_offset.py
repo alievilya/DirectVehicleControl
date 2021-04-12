@@ -15,24 +15,24 @@ def sendcommand():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((HOST, PORT))
     while True:
-        print("1 - tilt,\n2 - roll,\n3 - yaw,\n4 - zoom_level,\n5 - takeoff,\n6 - land,\n7 - joystick")
+        print("1 - x,\n2 - y,\n3 - z,\n4 - rotate,\n5 - takeoff,\n6 - land,\n7 - joystick")
         val = input("enter command:\n")
         if val == "1":
-            command = "payload_control:tilt,1"
+            command = "set_position_offset:x,0.5"
         elif val == "2":
-            command = "payload_control:roll,0.5"
+            command = "set_position_offset:y,0.5"
         elif val == "3":
-            command = "payload_control:yaw,0.5"
+            command = "set_position_offset:z,0.5"
         elif val == "4":
-            command = "payload_control:zoom_level,0.5"
+            command = "set_relative_heading:relative_heading,3.14"
         elif val == "-1":
-            command = "payload_control:tilt,-0.5"
+            command = "set_position_offset:x,-0.5"
         elif val == "-2":
-            command = "payload_control:roll,-0.5"
+            command = "set_position_offset:y,-0.5"
         elif val == "-3":
-            command = "payload_control:yaw,-0.5"
+            command = "set_position_offset:z,-0.5"
         elif val == "-4":
-            command = "payload_control:zoom_level,-0.5"
+            command = "set_relative_heading:relative_heading,-3.14"
         elif val == "5":
             command = "takeoff_command"
         elif val == "6":
